@@ -1,4 +1,4 @@
-part of virtual_keyboard_multi_language;
+part of on_screen_keyboard;
 
 /// Keys for Virtual Keyboard's rows.
 const List<List> _keyRowsNumeric = [
@@ -38,41 +38,51 @@ List<VirtualKeyboardKey> _getKeyboardRowKeysNumeric(rowNum) {
     return VirtualKeyboardKey(
       text: key,
       capsText: key.toUpperCase(),
-      keyType: VirtualKeyboardKeyType.String,
+      keyType: VirtualKeyboardKeyType.string,
     );
   });
 }
 
 /// Returns a list of `VirtualKeyboardKey` objects.
 List<VirtualKeyboardKey> _getKeyboardRowKeys(
-    VirtualKeyboardLayoutKeys layoutKeys, rowNum) {
+  KeyboardLayout virtualKeyboardLayout,
+  rowNum,
+) {
   // Generate VirtualKeyboardKey objects for each row.
-  return List.generate(layoutKeys.activeLayout[rowNum].length, (int keyNum) {
-    // Get key string value.
-    if (layoutKeys.activeLayout[rowNum][keyNum] is String) {
-      String key = layoutKeys.activeLayout[rowNum][keyNum];
+  return List.generate(virtualKeyboardLayout.keys[rowNum].length, (int keyNum) {
+    final dynamic key = virtualKeyboardLayout.keys[rowNum][keyNum];
+
+    // Handle string key.
+    if (key is String) {
+      String text = virtualKeyboardLayout.keys[rowNum][keyNum];
 
       // Create and return new VirtualKeyboardKey object.
       return VirtualKeyboardKey(
-        text: key,
-        capsText: key.toUpperCase(),
-        keyType: VirtualKeyboardKeyType.String,
+        text: text,
+        capsText: text.toUpperCase(),
+        keyType: VirtualKeyboardKeyType.string,
       );
-    } else {
-      var action =
-          layoutKeys.activeLayout[rowNum][keyNum] as VirtualKeyboardKeyAction;
-      return VirtualKeyboardKey(
-          keyType: VirtualKeyboardKeyType.Action, action: action);
     }
+
+    // Handle action key.
+    else if (key is VirtualKeyboardKeyAction) {
+      var action = virtualKeyboardLayout.keys[rowNum][keyNum]
+          as VirtualKeyboardKeyAction;
+      return VirtualKeyboardKey(
+        keyType: VirtualKeyboardKeyType.action,
+        action: action,
+      );
+    }
+    throw Exception("Unhandled key type: ${key.runtimeType}");
   });
 }
 
 /// Returns a list of VirtualKeyboard rows with `VirtualKeyboardKey` objects.
 List<List<VirtualKeyboardKey>> _getKeyboardRows(
-    VirtualKeyboardLayoutKeys layoutKeys) {
+    KeyboardLayout virtualKeyboardLayout) {
   // Generate lists for each keyboard row.
-  return List.generate(layoutKeys.activeLayout.length,
-      (int rowNum) => _getKeyboardRowKeys(layoutKeys, rowNum));
+  return List.generate(virtualKeyboardLayout.keys.length,
+      (int rowNum) => _getKeyboardRowKeys(virtualKeyboardLayout, rowNum));
 }
 
 /// Returns a list of VirtualKeyboard rows with `VirtualKeyboardKey` objects.
@@ -91,8 +101,8 @@ List<List<VirtualKeyboardKey>> _getKeyboardRowsNumeric() {
         // Right Shift
         rowKeys.add(
           VirtualKeyboardKey(
-              keyType: VirtualKeyboardKeyType.Action,
-              action: VirtualKeyboardKeyAction.Backspace),
+              keyType: VirtualKeyboardKeyType.action,
+              action: VirtualKeyboardKeyAction.backspace),
         );
         break;
       default:

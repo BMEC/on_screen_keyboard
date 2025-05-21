@@ -1,4 +1,10 @@
-part of virtual_keyboard_multi_language;
+part of on_screen_keyboard;
 
 /// Virtual keyboard actions.
-enum VirtualKeyboardKeyAction { Backspace, Return, Shift, Space, SwithLanguage }
+enum VirtualKeyboardKeyAction {
+  backspace,
+  carriageReturn,
+  shift,
+  space,
+  switchLanguage,
+}

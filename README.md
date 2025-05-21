@@ -1,9 +1,11 @@
-# virtual_keyboard_multi_language
+# on_screen_keyboard
 
 # About
 A simple package for dispaying virtual keyboards on a devices like kiosks and ATMs. The library is written in Dart and has no native code dependancy.
 
 This project has forked from `virtual_keyboard` project because the `virtual_keyboard` project built to only display a buttons on the screen with single language. However, this project will handel the events and aill supports multi-languages.
+
+This project has forked from https://github.com/ahmed-eg/virtual_keyboard_multi_language which seems unmaintained.
 
 # Feature and TODO List:
 - (Done) Multi-langugae support. (English-Arabic-Kurdish)

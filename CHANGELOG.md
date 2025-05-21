@@ -30,3 +30,8 @@
 ## [1.0.3] - 06/07/2022.
 
 * null safety 
+
+## [1.2.0] - 21/05/2025.
+
+* BMEC fork.
+* Various fixes and cleanup.

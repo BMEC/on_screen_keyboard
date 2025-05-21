@@ -1,6 +1,9 @@
-part of virtual_keyboard_multi_language;
+part of on_screen_keyboard;
 
-/// Available Virtual Keyboard Types:
-/// `Numeric` - Numeric only.
-/// `Alphanumeric` - Alphanumeric: letters`[A-Z]` + numbers`[0-9]` + `@` + `.`.
-enum VirtualKeyboardType { Numeric, Alphanumeric }
+/// Available keyboard types.
+enum KeyboardType {
+  /// Numeric only.
+  numeric,
+  /// Alphanumeric: letters`[A-Z]` + numbers`[0-9]` + `@` + `.`.
+  alphanumeric,
+}

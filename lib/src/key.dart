@@ -1,4 +1,4 @@
-part of virtual_keyboard_multi_language;
+part of on_screen_keyboard;
 
 /// Virtual Keyboard key
 class VirtualKeyboardKey {
@@ -11,14 +11,14 @@ class VirtualKeyboardKey {
 
       {this.text, this.capsText, required this.keyType, this.action}) {
     if (this.text == null && this.action != null) {
-      this.text = action == VirtualKeyboardKeyAction.Space
+      this.text = action == VirtualKeyboardKeyAction.space
           ? ' '
-          : (action == VirtualKeyboardKeyAction.Return ? '\n' : '');
+          : (action == VirtualKeyboardKeyAction.carriageReturn ? '\n' : '');
     }
     if (this.capsText == null && this.action != null) {
-      this.capsText = action == VirtualKeyboardKeyAction.Space
+      this.capsText = action == VirtualKeyboardKeyAction.space
           ? ' '
-          : (action == VirtualKeyboardKeyAction.Return ? '\n' : '');
+          : (action == VirtualKeyboardKeyAction.carriageReturn ? '\n' : '');
     }
   }
 
