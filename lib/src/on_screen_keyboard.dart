@@ -1,23 +1,29 @@
 part of on_screen_keyboard;
 
-/// The default keyboard height. Can we override by passing
-///  `height` argument to `VirtualKeyboard` widget.
-const double _virtualKeyboardDefaultHeight = 300;
-
-const int _virtualKeyboardBackspaceEventPeriod = 250;
+/// Available keyboard types.
+enum KeyboardType {
+  /// Numeric only.
+  numeric,
+  /// Alphanumeric: letters`[A-Z]` + numbers`[0-9]` + `@` + `.`.
+  alphanumeric,
+}
 
 /// On screen keyboard widget.
 class OnScreenKeyboard extends StatefulWidget {
+  /// The default keyboard height. Can we override by passing
+  ///  `height` argument to `VirtualKeyboard` widget.
+  static const double _virtualKeyboardDefaultHeight = 300;
+
   /// Keyboard Type: Should be inited in creation time.
   final KeyboardType type;
 
   /// Callback for Key press event. Called with pressed `Key` object.
   /// will fire before adding key's text to controller if a controller is provided
-  final Function(VirtualKeyboardKey key)? onTapDown;
+  final Function(KeyboardKey key)? onTapDown;
 
   /// Callback for Key press event. Called with pressed `Key` object.
   /// will fire after adding key's text to controller if a controller is provided
-  final Function(VirtualKeyboardKey key)? onTapUp;
+  final Function(KeyboardKey key)? onTapUp;
 
   /// Virtual keyboard height. Default is 300
   final double height;
@@ -26,7 +32,7 @@ class OnScreenKeyboard extends StatefulWidget {
   final double? width;
 
   /// Color for key texts and icons.
-  final Color textColor;
+  final Color? textColor;
 
   /// Font size for keyboard keys.
   final double fontSize;
@@ -39,7 +45,7 @@ class OnScreenKeyboard extends StatefulWidget {
 
   /// The builder function will be called for each Key object.
   /// Returning null falls back on the default builder.
-  final Widget Function(BuildContext context, VirtualKeyboardKey key)? builder;
+  final Widget Function(BuildContext context, KeyboardKey key)? builder;
 
   /// Set to true if you want only to show Caps letters.
   final bool alwaysCaps;
@@ -47,23 +53,24 @@ class OnScreenKeyboard extends StatefulWidget {
   /// inverse the layout to fix the issues with right to left languages.
   final bool reverseLayout;
 
-  OnScreenKeyboard({Key? key,
-    required this.type,
-    this.onTapDown,
-    this.onTapUp,
-    this.builder,
-    this.width,
-    this.keyboardLayouts = const [
-      EnglishKeyboardLayout(),
-      EnglishExtendedKeyboardLayout(),
-      ArabicKeyboardLayout(),
-    ],
-    this.textController,
-    this.reverseLayout = false,
-    this.height = _virtualKeyboardDefaultHeight,
-    this.textColor = Colors.black,
-    this.fontSize = 14,
-    this.alwaysCaps = false})
+  OnScreenKeyboard(
+      {Key? key,
+      required this.type,
+      this.onTapDown,
+      this.onTapUp,
+      this.builder,
+      this.width,
+      this.keyboardLayouts = const [
+        EnglishKeyboardLayout(),
+        EnglishExtendedKeyboardLayout(),
+        ArabicKeyboardLayout(),
+      ],
+      this.textController,
+      this.reverseLayout = false,
+      this.height = _virtualKeyboardDefaultHeight,
+      this.textColor = Colors.black,
+      this.fontSize = 14,
+      this.alwaysCaps = false})
       : super(key: key);
 
   @override
@@ -72,17 +79,18 @@ class OnScreenKeyboard extends StatefulWidget {
   }
 }
 
-/// Holds the state for Virtual Keyboard class.
 class _OnScreenKeyboardState extends State<OnScreenKeyboard> {
+  static const int _virtualKeyboardBackspaceEventPeriod = 250;
+
   KeyboardType type = KeyboardType.alphanumeric;
-  Function(VirtualKeyboardKey key)? preKeyPress;
-  Function(VirtualKeyboardKey key)? postKeyPress;
+  Function(KeyboardKey key)? preKeyPress;
+  Function(KeyboardKey key)? postKeyPress;
   TextEditingController? textController;
 
-  Widget Function(BuildContext context, VirtualKeyboardKey key)? builder;
+  Widget Function(BuildContext context, KeyboardKey key)? builder;
   late double height;
   double? width;
-  late Color textColor;
+  late Color? textColor;
   late double fontSize;
   late bool alwaysCaps;
   late bool reverseLayout;
@@ -96,46 +104,45 @@ class _OnScreenKeyboardState extends State<OnScreenKeyboard> {
   bool isShiftEnabled = false;
 
   /// Increments to the next keyboard looping back to the start.
-  void _switchActiveKeyboardLayout() =>
-      activeKeyboardLayout =
-      keyboardLayouts[(keyboardLayouts.indexOf(activeKeyboardLayout) + 1) %
+  void _switchActiveKeyboardLayout() => activeKeyboardLayout = keyboardLayouts[
+      (keyboardLayouts.indexOf(activeKeyboardLayout) + 1) %
           keyboardLayouts.length];
 
   /// Returns the [KeyboardLayout.switchIconText] for the next KeyboardLayout.
   String _getSwitchIconText() =>
-    keyboardLayouts[(keyboardLayouts.indexOf(activeKeyboardLayout) + 1) %
-        keyboardLayouts.length].switchIconText;
+      keyboardLayouts[(keyboardLayouts.indexOf(activeKeyboardLayout) + 1) %
+              keyboardLayouts.length]
+          .switchIconText;
 
-
-  void _onKeyPress(VirtualKeyboardKey key) {
+  void _onKeyPress(KeyboardKey key) {
     if (preKeyPress != null) preKeyPress!(key);
 
-    if (key.keyType == VirtualKeyboardKeyType.string) {
+    if (key.keyType == KeyboardKeyType.string) {
       if (isShiftEnabled) {
         _insertText(key.capsText!);
       } else {
         _insertText(key.text!);
       }
-    } else if (key.keyType == VirtualKeyboardKeyType.action) {
+    } else if (key.keyType == KeyboardKeyType.action) {
       switch (key.action) {
-        case VirtualKeyboardKeyAction.backspace:
+        case KeyboardKeyAction.backspace:
           {
             _backspace();
           }
           break;
-        case VirtualKeyboardKeyAction.carriageReturn:
+        case KeyboardKeyAction.carriageReturn:
           {
             _insertText('\n');
           }
           break;
-        case VirtualKeyboardKeyAction.space:
+        case KeyboardKeyAction.space:
           {
             _insertText(key.text!);
           }
           break;
-        case VirtualKeyboardKeyAction.shift:
+        case KeyboardKeyAction.shift:
           break;
-        case VirtualKeyboardKeyAction.switchLanguage:
+        case KeyboardKeyAction.switchLanguage:
           {
             setState(() {
               _switchActiveKeyboardLayout();
@@ -274,10 +281,7 @@ class _OnScreenKeyboardState extends State<OnScreenKeyboard> {
   Widget _alphanumeric() {
     return Container(
       height: height,
-      width: width ?? MediaQuery
-          .of(context)
-          .size
-          .width,
+      width: width ?? MediaQuery.of(context).size.width,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -289,10 +293,7 @@ class _OnScreenKeyboardState extends State<OnScreenKeyboard> {
   Widget _numeric() {
     return Container(
       height: height,
-      width: width ?? MediaQuery
-          .of(context)
-          .size
-          .width,
+      width: width ?? MediaQuery.of(context).size.width,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -304,8 +305,7 @@ class _OnScreenKeyboardState extends State<OnScreenKeyboard> {
   /// Returns the rows for keyboard.
   List<Widget> _rows() {
     // Get the keyboard Rows
-    List<List<VirtualKeyboardKey>> keyboardRows =
-    type == KeyboardType.numeric
+    List<List<KeyboardKey>> keyboardRows = type == KeyboardType.numeric
         ? _getKeyboardRowsNumeric()
         : _getKeyboardRows(activeKeyboardLayout);
 
@@ -313,22 +313,22 @@ class _OnScreenKeyboardState extends State<OnScreenKeyboard> {
     List<Widget> rows = List.generate(keyboardRows.length, (int rowNum) {
       var items = List.generate(keyboardRows[rowNum].length, (int keyNum) {
         // Get the VirtualKeyboardKey object.
-        VirtualKeyboardKey virtualKeyboardKey = keyboardRows[rowNum][keyNum];
+        KeyboardKey virtualKeyboardKey = keyboardRows[rowNum][keyNum];
 
         // Attempt to get the keyWidget from the builder.
         Widget? keyWidget =
-        builder == null ? null : builder!(context, virtualKeyboardKey);
+            builder == null ? null : builder!(context, virtualKeyboardKey);
 
         // If the keyWidget is null then fallback on the default builders.
         if (keyWidget == null) {
           // Check the key type.
           switch (virtualKeyboardKey.keyType) {
-            case VirtualKeyboardKeyType.string:
-            // Draw String key.
+            case KeyboardKeyType.string:
+              // Draw String key.
               keyWidget = _keyboardDefaultKey(virtualKeyboardKey);
               break;
-            case VirtualKeyboardKeyType.action:
-            // Draw action key.
+            case KeyboardKeyType.action:
+              // Draw action key.
               keyWidget = _keyboardDefaultActionKey(virtualKeyboardKey);
               break;
           }
@@ -356,7 +356,7 @@ class _OnScreenKeyboardState extends State<OnScreenKeyboard> {
   bool longPress = false;
 
   /// Creates default UI element for keyboard Key.
-  Widget _keyboardDefaultKey(VirtualKeyboardKey key) {
+  Widget _keyboardDefaultKey(KeyboardKey key) {
     return Expanded(
       child: InkWell(
         onTap: () {
@@ -378,28 +378,28 @@ class _OnScreenKeyboardState extends State<OnScreenKeyboard> {
   }
 
   /// Creates default UI element for keyboard Action Key.
-  Widget _keyboardDefaultActionKey(VirtualKeyboardKey key) {
+  Widget _keyboardDefaultActionKey(KeyboardKey key) {
     // Holds the action key widget.
     Widget? actionKey;
 
     // Switch the action type to build action Key widget.
 
     switch (key.action!) {
-      case VirtualKeyboardKeyAction.backspace:
+      case KeyboardKeyAction.backspace:
         actionKey = GestureDetector(
             onLongPress: () {
               longPress = true;
               // Start sending backspace key events while longPress is true
               Timer.periodic(
                   Duration(milliseconds: _virtualKeyboardBackspaceEventPeriod),
-                      (timer) {
-                    if (longPress) {
-                      _onKeyPress(key);
-                    } else {
-                      // Cancel timer.
-                      timer.cancel();
-                    }
-                  });
+                  (timer) {
+                if (longPress) {
+                  _onKeyPress(key);
+                } else {
+                  // Cancel timer.
+                  timer.cancel();
+                }
+              });
             },
             onLongPressUp: () {
               // Cancel event loop
@@ -414,19 +414,19 @@ class _OnScreenKeyboardState extends State<OnScreenKeyboard> {
               ),
             ));
         break;
-      case VirtualKeyboardKeyAction.shift:
+      case KeyboardKeyAction.shift:
         actionKey = Icon(Icons.arrow_upward, color: textColor);
         break;
-      case VirtualKeyboardKeyAction.space:
+      case KeyboardKeyAction.space:
         actionKey = actionKey = Icon(Icons.space_bar, color: textColor);
         break;
-      case VirtualKeyboardKeyAction.carriageReturn:
+      case KeyboardKeyAction.carriageReturn:
         actionKey = Icon(
           Icons.keyboard_return,
           color: textColor,
         );
         break;
-      case VirtualKeyboardKeyAction.switchLanguage:
+      case KeyboardKeyAction.switchLanguage:
         actionKey = Container(
           height: height / activeKeyboardLayout.keys.length,
           child: Center(
@@ -441,7 +441,7 @@ class _OnScreenKeyboardState extends State<OnScreenKeyboard> {
 
     Widget widget = InkWell(
       onTap: () {
-        if (key.action == VirtualKeyboardKeyAction.shift) {
+        if (key.action == KeyboardKeyAction.shift) {
           if (!alwaysCaps) {
             setState(() {
               isShiftEnabled = !isShiftEnabled;
@@ -458,7 +458,7 @@ class _OnScreenKeyboardState extends State<OnScreenKeyboard> {
       ),
     );
 
-    if (key.action == VirtualKeyboardKeyAction.space)
+    if (key.action == KeyboardKeyAction.space)
       return Expanded(flex: 6, child: widget);
     else
       return Expanded(child: widget);

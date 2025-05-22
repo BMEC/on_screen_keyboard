@@ -39,7 +39,7 @@ class EnglishKeyboardLayout extends KeyboardLayout {
       'i',
       'o',
       'p',
-      VirtualKeyboardKeyAction.backspace
+      KeyboardKeyAction.backspace
     ],
     // Row 3
     [
@@ -54,11 +54,11 @@ class EnglishKeyboardLayout extends KeyboardLayout {
       'l',
       ';',
       '\'',
-      VirtualKeyboardKeyAction.carriageReturn
+      KeyboardKeyAction.carriageReturn
     ],
     // Row 4
     [
-      VirtualKeyboardKeyAction.shift,
+      KeyboardKeyAction.shift,
       'z',
       'x',
       'c',
@@ -69,13 +69,13 @@ class EnglishKeyboardLayout extends KeyboardLayout {
       ',',
       '.',
       '/',
-      VirtualKeyboardKeyAction.shift
+      KeyboardKeyAction.shift
     ],
     // Row 5
     [
-      VirtualKeyboardKeyAction.switchLanguage,
+      KeyboardKeyAction.switchLanguage,
       '@',
-      VirtualKeyboardKeyAction.space,
+      KeyboardKeyAction.space,
       '-',
       '&',
       '_',
@@ -136,11 +136,11 @@ class EnglishExtendedKeyboardLayout extends KeyboardLayout {
       'ñ',
     ],
     [
-      VirtualKeyboardKeyAction.switchLanguage,
-      VirtualKeyboardKeyAction.shift,
-      VirtualKeyboardKeyAction.space,
-      VirtualKeyboardKeyAction.shift,
-      VirtualKeyboardKeyAction.backspace,
+      KeyboardKeyAction.switchLanguage,
+      KeyboardKeyAction.shift,
+      KeyboardKeyAction.space,
+      KeyboardKeyAction.shift,
+      KeyboardKeyAction.backspace,
     ],
   ];
 
@@ -182,7 +182,7 @@ class ArabicKeyboardLayout extends KeyboardLayout {
       'ح',
       'ج',
       'د',
-      VirtualKeyboardKeyAction.backspace
+      KeyboardKeyAction.backspace
     ],
     // Row 3
     [
@@ -197,7 +197,7 @@ class ArabicKeyboardLayout extends KeyboardLayout {
       'م',
       'ك',
       'ط',
-      VirtualKeyboardKeyAction.carriageReturn
+      KeyboardKeyAction.carriageReturn
     ],
     // Row 4
     [
@@ -212,13 +212,13 @@ class ArabicKeyboardLayout extends KeyboardLayout {
       'و',
       'ز',
       'ظ',
-      VirtualKeyboardKeyAction.shift
+      KeyboardKeyAction.shift
     ],
     // Row 5
     [
-      VirtualKeyboardKeyAction.switchLanguage,
+      KeyboardKeyAction.switchLanguage,
       '@',
-      VirtualKeyboardKeyAction.space,
+      KeyboardKeyAction.space,
       '-',
       '.',
       '_',
@@ -288,17 +288,17 @@ class KurdishKeyboardLayout extends KeyboardLayout {
       'ز',
       'ۆ',
       'د',
-      VirtualKeyboardKeyAction.backspace
+      KeyboardKeyAction.backspace
     ],
     // Row 5
     [
-      VirtualKeyboardKeyAction.switchLanguage,
+      KeyboardKeyAction.switchLanguage,
       '@',
-      VirtualKeyboardKeyAction.space,
+      KeyboardKeyAction.space,
       '-',
       '.',
       '_',
-      VirtualKeyboardKeyAction.carriageReturn,
+      KeyboardKeyAction.carriageReturn,
     ]
   ];
 

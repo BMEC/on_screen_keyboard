@@ -1,24 +1,24 @@
 part of on_screen_keyboard;
 
-/// Virtual Keyboard key
-class VirtualKeyboardKey {
+/// Keyboard key.
+class KeyboardKey {
   String? text;
   String? capsText;
-  final VirtualKeyboardKeyType keyType;
-  final VirtualKeyboardKeyAction? action;
+  final KeyboardKeyType keyType;
+  final KeyboardKeyAction? action;
 
-  VirtualKeyboardKey(
+  KeyboardKey(
 
       {this.text, this.capsText, required this.keyType, this.action}) {
     if (this.text == null && this.action != null) {
-      this.text = action == VirtualKeyboardKeyAction.space
+      this.text = action == KeyboardKeyAction.space
           ? ' '
-          : (action == VirtualKeyboardKeyAction.carriageReturn ? '\n' : '');
+          : (action == KeyboardKeyAction.carriageReturn ? '\n' : '');
     }
     if (this.capsText == null && this.action != null) {
-      this.capsText = action == VirtualKeyboardKeyAction.space
+      this.capsText = action == KeyboardKeyAction.space
           ? ' '
-          : (action == VirtualKeyboardKeyAction.carriageReturn ? '\n' : '');
+          : (action == KeyboardKeyAction.carriageReturn ? '\n' : '');
     }
   }
 

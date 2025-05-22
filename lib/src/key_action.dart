@@ -1,7 +1,7 @@
 part of on_screen_keyboard;
 
-/// Virtual keyboard actions.
-enum VirtualKeyboardKeyAction {
+/// Keyboard actions.
+enum KeyboardKeyAction {
   backspace,
   carriageReturn,
   shift,
